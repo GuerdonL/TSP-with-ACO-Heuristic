@@ -1,0 +1,153 @@
+int numCities
+2dCoordinateList cityCoorrdinates
+int maxIterations
+int numAnts
+float decayFactor
+float "heuristicCoefficient" =~2.5
+float "historyCoefficient" =~1.0
+
+function findTheDistanceBtwnPoints(pointA, pointB)
+{
+	return squareRoot(squareOf(point A[0]-point B[0]) + squareOf(point A[1]-point B[1]))
+}
+
+function randomPermutation(cityCoordinates)
+{
+	permutation = new 2dCoordinateList of size numCities
+	for each index in permutation; i++
+	{
+		randomIndex  = randomNumberFromRange(0, numCities - i) + i
+		permutation[randomNumberInRange], permutation[i] = permutation[i], permutation[randomNumberInRange]
+	}
+	return permutation
+}
+
+function costInDistanceOf(permutation, cityCoordinates)
+{
+	distance = 0
+	for each index in permutation i++
+	{
+		pointA = permutation[i]
+		pointB = i==numCities-1 ? permutation[0] : permutation[i+1]
+		distance += findTheDistanceBtwnPoints(pointA, pointB)
+	}
+	return distance
+}
+
+function stepwiseConstant(cityCoordinates, pheromone, heuristicCoefficient, historyCoefficient)
+{
+	permutation = []
+	permutation.append(randomNumberFromRange(0, numCities))
+	while permutations.size != numCities
+	{
+		choices = calculateChoices(cityCoordinates, permutation[self.size-1], permutation, pheremone, heuristicCoefficient, historyCoefficient)
+		nextCity = selectNextCity(choices)
+		permutation.append(nextCity)
+	}
+	return permutation
+}
+
+function calculateChoices(cityCoordinates, permutation[self.size-1], permutation, pheremone, heuristicCoefficient, historyCoefficient)
+{
+	choices = []
+	for coordinate in cityCoordinates i++
+	{
+		if (!permutation.includes(i))
+		{
+			choice= new choice()
+			choice[city] = i
+			choice[history] = pheromone[permutation[self.size-1]][i] ** historyCoefficient
+			choice[distance] = findTheDistanceBtwnPoints(cityCoordinates[permutation[self.size-1]], coordinate)
+			choice[heuristic] = (1.0/choice[distance])**heuristicCoefficient
+			choice[probability] = choice[history]*choice[heuristic]
+			choices.append(choice)
+		}
+	}
+	return choices
+}
+
+function selectNextCity(choices)
+{
+	sumOfProbabilities = 0.0
+	for each choice in choices
+	{
+		sumOfProbabilities+=choice[probability]
+	}
+	if sum is 0.0
+	{
+		randomChoice = randomInRange(0,choices.size)
+		return choices[randomChoice][city]
+	}
+	#this is really fucking cool
+	randomWeightedChoiceTempValue = randomInRange(0.0,1.0)
+	for each choice in choices
+	{
+		randomWeightedChoiceTempValue-=(choice[probability]/sumOfProbabilities)
+		if randomWeightedChoiceTempValue <= 0.0 
+		{
+			return choice[city]
+		}
+	}
+	return choices[choices.size-1][city]
+}
+
+function naivePheromones(numCities, costOfNaivePermutation)
+{
+	naivePheremoneValue = (float)numCities/costOfNaivePermutation
+	naivePheremoneArray = float[numCities][numCities]
+	for each array in naivePheremoneArray
+	{
+		for each float in array
+		{
+			naivePheremoneValue = temp
+		}
+	}
+	return naivePheremoneArray
+}
+
+function decayPheromones(pheremone, decayFactor)
+{
+	for each array in pheremone 
+	{
+		for each float in array
+		{
+			float *= (1.0- decayFactor)
+		}
+	}
+}
+
+function updatePheremones(pheromone, solutions)
+{
+	for each solution in solutions
+	{
+		
+	}
+}
+
+Function startSearch(cityCoordinates, maxIterations, numAnts, decayFactor, heuristicCoefficient, historyCoefficient)
+{
+	best[]
+	best[Permutation] = randomPermutation(cityCoordinates)
+	best[Cost] = costInDistanceOf(randomPermutation, cityCoordinates)
+	pheromone = naivePheromones(numCities, best[Cost])
+	for maxIterations
+	{
+		solutions = []
+		for numAnts
+		{
+			candidate[]
+			candidate[Permutation] = stepwiseConstant(cityCoordinates, pheromone, heuristicCoefficient, historyCoefficient)
+			candidate[Cost] = costInDistanceOf(candidate[Permutation], cityCoordinates)
+			if (candidate[Cost] < best[Cost])
+			{
+				best[Cost] = candidate[Cost]
+				best[Permutation] = candidate[Permutation]
+			}
+		}
+		solutions.append(candidate)
+		decayPheromones(pheremone, decayFactor)
+		updatePheremones(pheromone, solutions)
+		print("end of iteration " + iter# + ", best was " + best#)
+	}
+	return best[Permutation], best[Cost]
+}
